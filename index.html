@@ -8,6 +8,29 @@
   </head>
   <body>
   <div id="map"></div>
+  <div id="control-panel">
+
+      <h3>🌍 Map Style</h3>
+
+      <select id="mapStyle">
+          <option value="mapbox://styles/mapbox/satellite-streets-v12">Hybrid</option>
+          <option value="mapbox://styles/mapbox/satellite-v9">Satellite</option>
+          <option value="mapbox://styles/mapbox/streets-v12">Streets</option>
+      </select>
+
+      <hr>
+
+      <h3>🗺️ Map Legend</h3>
+
+      <div><span class="road"></span> Vehicle Roads</div>
+      <div><span class="footpath"></span> Pedestrian Footpaths</div>
+      <div><span class="railway"></span> MRT Track</div>
+      <div><span class="platform"></span> MRT Platform</div>
+      <div><span class="bus"></span> Bus Stop</div>
+      <div><span class="crossing"></span> Crossing</div>
+      <div><span class="accessibility"></span> Accessibility Features</div>
+
+  </div>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
