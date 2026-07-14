@@ -1,6 +1,7 @@
 import clementi from "../data/clementi.json";
 
 export function addGeoJson(map) {
+    if (map.getSource("clementi")) return;
 
     map.addSource("clementi", {
         type: "geojson",

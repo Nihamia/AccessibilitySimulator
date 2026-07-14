@@ -6,8 +6,8 @@ import { createThreeLayer } from "./layers/threeLayer";
 // Use environment variable for API key
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN;
 function addSimulationLayers(map) {
-
-    const layers = map.getStyle().layers;
+    const style = map.getStyle();
+    const layers = style.layers;
 
     const labelLayerId = layers.find(
         (layer) =>
@@ -16,49 +16,61 @@ function addSimulationLayers(map) {
             layer.layout["text-field"]
     )?.id;
 
-    map.addLayer(
-        {
-            id: "3d-buildings",
-            source: "composite",
-            "source-layer": "building",
-            filter: ["==", "extrude", "true"],
-            type: "fill-extrusion",
-            minzoom: 15,
+    // Some styles (e.g. pure satellite) have no "composite" source.
+    // Don't let buildings block the Three.js agent layer.
+    if (style.sources?.composite && !map.getLayer("3d-buildings")) {
+        map.addLayer(
+            {
+                id: "3d-buildings",
+                source: "composite",
+                "source-layer": "building",
+                filter: ["==", "extrude", "true"],
+                type: "fill-extrusion",
+                minzoom: 15,
 
-            paint: {
-                "fill-extrusion-color": "#aaa",
+                paint: {
+                    "fill-extrusion-color": "#aaa",
 
-                "fill-extrusion-height": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    15,
-                    0,
-                    15.05,
-                    ["get", "height"],
-                ],
+                    "fill-extrusion-height": [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        15,
+                        0,
+                        15.05,
+                        ["get", "height"],
+                    ],
 
-                "fill-extrusion-base": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    15,
-                    0,
-                    15.05,
-                    ["get", "min_height"],
-                ],
+                    "fill-extrusion-base": [
+                        "interpolate",
+                        ["linear"],
+                        ["zoom"],
+                        15,
+                        0,
+                        15.05,
+                        ["get", "min_height"],
+                    ],
 
-                "fill-extrusion-opacity": 0.8,
+                    "fill-extrusion-opacity": 0.8,
+                },
             },
-        },
-        labelLayerId
-    );
+            labelLayerId
+        );
+    }
 
-    map.addLayer(createThreeLayer());
+    try {
+        addLandmarks(map);
+        addGeoJson(map);
+    } catch (err) {
+        console.error("Failed to add map overlays:", err);
+    }
 
-    addLandmarks(map);
-
-    addGeoJson(map);
+    // Always ensure Three.js agent layer exists and is drawn on top
+    if (!map.getLayer("threejs-layer")) {
+        map.addLayer(createThreeLayer());
+    } else {
+        map.moveLayer("threejs-layer");
+    }
 }
 export function createMap() {
   const map = new mapboxgl.Map({

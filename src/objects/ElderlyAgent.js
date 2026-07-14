@@ -1,55 +1,38 @@
 import * as THREE from "three";
-import mapboxgl from "mapbox-gl";
 
+/**
+ * Local-space mesh in meters (Y-up).
+ * Georeferencing is applied by the Mapbox custom layer, not here.
+ */
 export function createElderlyAgent() {
+  const elderly = new THREE.Group();
 
-    // Clementi MRT
-    const mercator = mapboxgl.MercatorCoordinate.fromLngLat(
-        [103.7650, 1.3151],
-        20
-    );
+  // depthTest: false so Mapbox 3D buildings cannot occlude the agent
+  const bodyMat = new THREE.MeshBasicMaterial({
+    color: 0x00ff66,
+    depthTest: false,
+    depthWrite: false,
+  });
+  const headMat = new THREE.MeshBasicMaterial({
+    color: 0xffd6a5,
+    depthTest: false,
+    depthWrite: false,
+  });
 
-    const scale = 1;
+  const body = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.4, 0.4, 1.6, 16),
+    bodyMat,
+  );
 
-    // Create a group to represent the person
-    const elderly = new THREE.Group();
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16), headMat);
+  head.position.y = 1.15;
 
-    // Body
-    const body = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.3, 0.3, 1.2, 16),
-        new THREE.MeshStandardMaterial({
-            color: 0x4CAF50
-        })
-    );
+  elderly.add(body);
+  elderly.add(head);
 
-    // Head
-    const head = new THREE.Mesh(
-        new THREE.SphereGeometry(0.25, 16, 16),
-        new THREE.MeshStandardMaterial({
-            color: 0xFFD6A5
-        })
-    );
+  // Render after map geometry within the Three.js pass
+  body.renderOrder = 999;
+  head.renderOrder = 999;
 
-    // Move the head above the body
-    head.position.y = 0.9;
-
-    // Add body and head to the group
-    elderly.add(body);
-    elderly.add(head);
-
-    // Position the whole person
-    elderly.position.set(
-        mercator.x,
-        mercator.y,
-        mercator.z
-    );
-
-    // Scale the whole person
-    elderly.scale.set(
-        scale,
-        scale,
-        scale
-    );
-
-    return elderly;
+  return elderly;
 }
