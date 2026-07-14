@@ -9,22 +9,6 @@ export const LANDMARKS = [
     },
 
     {
-        id: "bus_interchange",
-        name: "Bus Interchange",
-        type: "bus_interchange",
-        lng: 103.7648,
-        lat: 1.3149
-    },
-
-    {
-        id: "bus_stop_1",
-        name: "Bus Stop",
-        type: "bus_stop",
-        lng: 103.7645,
-        lat: 1.3150
-    },
-
-    {
         id: "crossing_1",
         name: "North Crossing",
         type: "crossing",

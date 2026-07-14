@@ -1,4 +1,34 @@
+import { renderRoads } from "./renderers/RoadRenderer";
+import { renderFootpaths } from "./renderers/FootpathRenderer";
+import { renderRailways } from "./renderers/RailwayRenderer";
+import { renderStation } from "./renderers/StationRenderer";
+import { renderCrossings } from "./renderers/CrossingRenderer";
+import { renderElevators } from "./renderers/ElevatorRenderer";
 import clementi from "../data/clementi.json";
+
+console.log(clementi.features.length);
+
+const highways = new Set();
+const railways = new Set();
+
+clementi.features.forEach(feature => {
+    if (feature.properties?.highway) {
+        highways.add(feature.properties.highway);
+    }
+
+    if (feature.properties?.railway) {
+        railways.add(feature.properties.railway);
+    }
+});
+
+console.log("Highways:", [...highways]);
+console.log("Railways:", [...railways]);
+const crossings = clementi.features.filter(
+    feature => feature.properties?.highway === "crossing"
+);
+
+console.log("Number of crossings:", crossings.length);
+console.log(crossings);
 
 export function addGeoJson(map) {
 
@@ -6,64 +36,10 @@ export function addGeoJson(map) {
         type: "geojson",
         data: clementi
     });
-
-    // ======================
-    // Roads
-    // ======================
-
-    map.addLayer({
-        id: "roads",
-
-        type: "line",
-
-        source: "clementi",
-
-        filter: [
-            "match",
-            ["get", "highway"],
-            [
-                "primary",
-                "secondary",
-                "tertiary",
-                "residential",
-                "service"
-            ],
-            true,
-            false
-        ],
-
-        paint: {
-            "line-color": "#555555",
-            "line-width": 4
-        }
-    });
-
-    // ======================
-    // Footpaths
-    // ======================
-
-    map.addLayer({
-        id: "footpaths",
-
-        type: "line",
-
-        source: "clementi",
-
-        filter: [
-            "match",
-            ["get", "highway"],
-            [
-                "footway"
-            ],
-            true,
-            false
-        ],
-
-        paint: {
-            "line-color": "#ff9800",
-            "line-width": 3
-        }
-    });
+    renderRoads(map);
+    renderFootpaths(map);
+    renderRailways(map);
+    renderStation(map);
 
     // ======================
     // Pedestrian Areas
@@ -88,50 +64,6 @@ export function addGeoJson(map) {
         }
     });
 
-    // ======================
-    // MRT Track
-    // ======================
 
-    map.addLayer({
-        id: "railway",
-
-        type: "line",
-
-        source: "clementi",
-
-        filter: [
-            "==",
-            ["get", "railway"],
-            "subway"
-        ],
-
-        paint: {
-            "line-color": "#d32f2f",
-            "line-width": 6
-        }
-    });
-
-    // ======================
-    // MRT Platforms
-    // ======================
-
-    map.addLayer({
-        id: "platform",
-
-        type: "fill",
-
-        source: "clementi",
-
-        filter: [
-            "==",
-            ["get", "railway"],
-            "platform"
-        ],
-
-        paint: {
-            "fill-color": "#8e24aa",
-            "fill-opacity": 0.5
-        }
-    });
 
 }

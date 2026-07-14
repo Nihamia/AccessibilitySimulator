@@ -26,7 +26,19 @@ function addSimulationLayers(map) {
             minzoom: 15,
 
             paint: {
-                "fill-extrusion-color": "#aaa",
+                "fill-extrusion-color": [
+                    "interpolate",
+                    ["linear"],
+                    ["get", "height"],
+                    0,
+                    "#d8d8d8",
+                    20,
+                    "#bdbdbd",
+                    60,
+                    "#9e9e9e",
+                    120,
+                    "#7a7a7a"
+                ],
 
                 "fill-extrusion-height": [
                     "interpolate",
@@ -48,7 +60,7 @@ function addSimulationLayers(map) {
                     ["get", "min_height"],
                 ],
 
-                "fill-extrusion-opacity": 0.8,
+                "fill-extrusion-opacity": 0.96,
             },
         },
         labelLayerId
@@ -68,9 +80,9 @@ export function createMap() {
 
       center: [103.7650, 1.3151],
 
-      zoom: 18.3,
-      pitch: 65,
-      bearing: -28,
+      zoom: 19.2,
+      pitch: 78,
+      bearing: -35,
 
       minZoom: 17,
       maxZoom: 20,
@@ -85,6 +97,8 @@ export function createMap() {
 map.setMaxBounds(bounds);
 
 map.addControl(new mapboxgl.NavigationControl());
+map.dragRotate.enable();
+map.touchZoomRotate.enableRotation();
 
 const mapStyle = document.getElementById("mapStyle");
 
@@ -93,6 +107,25 @@ mapStyle.addEventListener("change", (e) => {
 });
 
 map.on("style.load", () => {
+    map.setFog({
+    color: "rgb(220,235,255)",
+    "high-color": "rgb(36,92,223)",
+    "horizon-blend": 0.15,
+    "space-color": "rgb(11,11,25)",
+    "star-intensity": 0.15
+});
+
+map.addSource("mapbox-dem", {
+    type: "raster-dem",
+    url: "mapbox://mapbox.mapbox-terrain-dem-v1",
+    tileSize: 512,
+    maxzoom: 14
+});
+
+map.setTerrain({
+    source: "mapbox-dem",
+    exaggeration: 1.2
+});
     addSimulationLayers(map);
 });
 
