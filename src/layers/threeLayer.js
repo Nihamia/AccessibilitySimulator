@@ -1,9 +1,12 @@
 import * as THREE from "three";
 import mapboxgl from "mapbox-gl";
 import { createElderlyAgent } from "../objects/ElderlyAgent";
-
-const AGENT_ORIGIN = [103.765, 1.3151];
-const AGENT_ALTITUDE = 5;
+import { Movement } from "../simulation/movement";
+import {
+  AGENT_ALTITUDE,
+  AGENT_ORIGIN,
+  MRT_TO_HAWKER,
+} from "../simulation/waypoints";
 
 export function createThreeLayer() {
   let map;
@@ -11,6 +14,8 @@ export function createThreeLayer() {
   let camera;
   let renderer;
   let modelTransform;
+  let movement;
+  let lastTime;
 
   return {
     id: "threejs-layer",
@@ -19,6 +24,7 @@ export function createThreeLayer() {
 
     onAdd(mapInstance, gl) {
       map = mapInstance;
+      lastTime = performance.now();
       scene = new THREE.Scene();
       camera = new THREE.Camera();
 
@@ -46,11 +52,19 @@ export function createThreeLayer() {
       });
       renderer.autoClear = false;
 
-      scene.add(createElderlyAgent());
+      const elderly = createElderlyAgent();
+      scene.add(elderly);
+      movement = new Movement(elderly, MRT_TO_HAWKER);
     },
 
     render(_gl, matrix) {
       if (!modelTransform) return;
+
+      const now = performance.now();
+      const delta = (now - lastTime) / 1000; // delta is the time difference between the current and last frame in seconds
+      lastTime = now;
+
+      movement.update(delta);
 
       const rotationX = new THREE.Matrix4().makeRotationAxis(
         new THREE.Vector3(1, 0, 0),
