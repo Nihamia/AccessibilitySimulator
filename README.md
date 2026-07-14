@@ -1,154 +1,444 @@
-# 🚶 Accessibility Simulator
+# Accessibility Simulator
 
-A digital twin of the Clementi MRT precinct built with **Mapbox GL JS**, **Three.js**, and **OpenStreetMap** to simulate accessibility and pedestrian movement.
+A browser-based accessibility and public transport digital twin focused on the Clementi MRT area in Singapore.
 
-## 📖 Overview
+The project combines Mapbox GL JS, Three.js, OpenStreetMap-derived GeoJSON, and LTA DataMall data to visualise transport infrastructure, bus stops, bus routes, and simulated moving buses.
 
-Accessibility Simulator is a web-based 3D simulation platform that models the physical environment around Clementi MRT. The project aims to visualize pedestrian infrastructure, transport networks, and accessibility features to support better urban planning and mobility analysis.
+## Current Project Status
 
-The simulator is being developed as part of the **Tech4City 2026** project.
+### Phase 1 — World and Map Rendering
+- Mapbox GL JS map
+- Street-style base map
+- 3D Mapbox building extrusions
+- Terrain and fog
+- Three.js custom layer
+- Clementi OpenStreetMap GeoJSON
+- Road rendering
+- Footpath rendering
+- MRT railway and platform rendering
+- MRT station rendering
+- Crossing rendering
+- Elevator rendering
+- Landmark markers and labels
 
----
+### Phase 2 — Public Transport Simulation
+- LTA DataMall backend integration
+- All Singapore bus stops downloaded with pagination
+- Clementi bus stops filtered from LTA data
+- 18 Clementi-area bus stops rendered
+- Live Bus Arrival v3 integration
+- Bus arrival popup on bus-stop click
+- LTA Bus Routes integration
+- 26,871 bus-route records retrieved
+- 168 route records matched to Clementi bus stops
+- Routes grouped by service number and direction
+- OSM road network extracted
+- 87 road LineStrings found
+- Road graph built with 259 nodes
+- Dijkstra shortest-path routing
+- One-way road support
+- 27 drawable road-following bus route groups
+- Test moving bus animation
+- Distance-based bus movement at a constant speed
 
-## ✨ Features
+## Project Goal
 
-### 🗺️ Interactive Map
-- Mapbox GL JS integration
-- Streets, Satellite, and Hybrid map styles
-- 3D building visualization
-- Navigation controls
+The goal is to build an accessibility-focused simulation of a small Singapore transport environment.
 
-### 🌍 Digital Twin
-- Clementi MRT focused simulation
-- Real-world OpenStreetMap data
-- GeoJSON infrastructure layers
+The simulator is intended to support the study of mobility challenges faced by wheelchair users, seniors, people with limited physical mobility, and caregivers.
 
-### 🚶 Transportation Network
-- Vehicle roads
-- Pedestrian footpaths
-- MRT tracks
-- MRT platforms
-- Landmarks
+Future simulation agents and analytics will help identify accessibility bottlenecks and test possible infrastructure improvements.
 
-### 🧊 3D Simulation
-- Three.js integration
-- Custom 3D rendering layer
-- Initial elderly pedestrian model
-- Ready for animated agents
+## Technology Stack
 
----
-
-## 🛠️ Technologies
-
-- JavaScript (ES6)
+### Frontend
 - Vite
+- JavaScript
 - Mapbox GL JS
 - Three.js
-- OpenStreetMap
 - GeoJSON
 
----
+### Backend
+- Node.js
+- Express
+- Axios
+- CORS
+- dotenv
 
-## 📂 Project Structure
+### Data
+- LTA DataMall
+- OpenStreetMap-derived GeoJSON
+- Mapbox map and terrain data
 
+## Project Structure
+
+```text
+AccessibilitySimulator/
+├── src/
+│   ├── data/
+│   │   └── clementi.json
+│   ├── layers/
+│   │   └── threeLayer.js
+│   ├── world/
+│   │   ├── GeoJsonRenderer.js
+│   │   ├── WorldRenderer.js
+│   │   ├── landmarks.js
+│   │   ├── routing/
+│   │   │   └── RoadNetwork.js
+│   │   └── renderers/
+│   │       ├── RoadRenderer.js
+│   │       ├── FootpathRenderer.js
+│   │       ├── RailwayRenderer.js
+│   │       ├── StationRenderer.js
+│   │       ├── CrossingRenderer.js
+│   │       ├── ElevatorRenderer.js
+│   │       ├── BusStopRenderer.js
+│   │       ├── BusRouteRenderer.js
+│   │       ├── BusSimulationRenderer.js
+│   │       └── LandmarkRenderer.js
+│   └── map.js
+├── server/
+│   ├── routes/
+│   │   ├── lta.js
+│   │   └── busRoutes.js
+│   ├── .env
+│   ├── package.json
+│   └── server.js
+├── .env
+├── package.json
+└── README.md
 ```
-src/
-│
-├── data/
-│   └── clementi.json
-│
-├── layers/
-│   └── threeLayer.js
-│
-├── objects/
-│   └── ElderlyAgent.js
-│
-├── world/
-│   ├── GeoJsonRenderer.js
-│   ├── WorldRenderer.js
-│   └── renderers/
-│
-├── map.js
-├── main.js
-└── style.css
-```
 
----
+## Setup From the Start
 
-## 🚀 Installation
-
-Clone the repository:
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Nihamia/AccessibilitySimulator.git
-```
-
-Go into the project:
-
-```bash
 cd AccessibilitySimulator
 ```
 
-Install dependencies:
+### 2. Install Frontend Dependencies
 
 ```bash
 npm install
 ```
 
-Create a `.env` file:
+### 3. Create the Frontend Environment File
+
+Create a `.env` file in the project root:
 
 ```env
 VITE_MAPBOX_TOKEN=YOUR_MAPBOX_ACCESS_TOKEN
 ```
 
-Run the development server:
+Do not commit the `.env` file.
+
+### 4. Install Backend Dependencies
+
+```bash
+cd server
+npm install
+```
+
+### 5. Create the Backend Environment File
+
+Create:
+
+```text
+server/.env
+```
+
+Add:
+
+```env
+LTA_API_KEY=YOUR_LTA_DATAMALL_ACCOUNT_KEY
+```
+
+Do not commit this file or expose the LTA account key publicly.
+
+### 6. Start the Backend
+
+From the `server` folder:
+
+```bash
+npm start
+```
+
+Expected output:
+
+```text
+Server running on http://localhost:3000
+```
+
+### 7. Start the Frontend
+
+Open another terminal and run this from the project root:
 
 ```bash
 npm run dev
 ```
 
----
+Open the local Vite URL shown in the terminal.
 
-## 📍 Current Progress
+## Running on Another Computer
 
-✅ Mapbox integration
+After cloning or pulling the repository:
 
-✅ Three.js integration
+```bash
+git pull
+npm install
+```
 
-✅ 3D buildings
+Start the frontend:
 
-✅ GeoJSON renderer
+```bash
+npm run dev
+```
 
-✅ Landmark labels
+In a second terminal:
 
-✅ Transportation layer visualization
+```bash
+cd server
+npm install
+npm start
+```
 
-✅ Map style selector
+Remember to manually recreate:
 
-🚧 Vehicle simulation
+```text
+.env
+server/.env
+```
 
-🚧 Pedestrian simulation
+Environment files are intentionally not stored in GitHub.
 
-🚧 MRT simulation
+## Backend API Endpoints
 
-🚧 Accessibility analysis
+### Bus Stops
 
----
+```text
+GET http://localhost:3000/api/busStops
+```
 
-## 🎯 Future Development
+Downloads LTA bus-stop data using `$skip` pagination and filters stops to the Clementi simulation area.
 
-- Animated buses
-- Animated MRT trains
-- Animated pedestrians
-- Wheelchair routing
-- Elderly movement simulation
-- Accessibility heatmaps
-- AI-based pathfinding
-- Traffic simulation
-- Digital twin analytics dashboard
+Current result:
 
----
+```text
+18 bus stops
+```
 
-## 📄 License
+### Bus Arrival
 
-This project is for educational and research purposes.
+```text
+GET http://localhost:3000/api/busArrival/:busStopCode
+```
+
+Example:
+
+```text
+GET http://localhost:3000/api/busArrival/17179
+```
+
+Uses the LTA Bus Arrival v3 API.
+
+The frontend displays live arrival estimates when a user clicks a bus-stop marker.
+
+### Bus Routes
+
+```text
+GET http://localhost:3000/api/busRoutes
+```
+
+Downloads the LTA Bus Routes dataset using `$skip` pagination.
+
+Current result:
+
+```text
+26,871 bus-route records
+```
+
+## Bus Route Processing
+
+The current route pipeline is:
+
+```text
+LTA Bus Routes
+      ↓
+Match Clementi BusStopCode values
+      ↓
+Group by ServiceNo + Direction
+      ↓
+Sort by StopSequence
+      ↓
+Find nearest OSM road nodes
+      ↓
+Run Dijkstra shortest path
+      ↓
+Create road-following GeoJSON LineStrings
+      ↓
+Render bus routes in Mapbox
+```
+
+Current processing results:
+
+```text
+Clementi bus stops: 18
+LTA bus-route records: 26,871
+Clementi route records: 168
+OSM road features: 87
+Road graph nodes: 259
+Drawable route lines: 27
+```
+
+## Road Network Routing
+
+`RoadNetwork.js` currently:
+
+- Extracts supported road types from `clementi.json`
+- Converts road coordinates into graph nodes
+- Connects neighbouring coordinates as weighted graph edges
+- Calculates nearest road nodes for bus-stop coordinates
+- Uses Dijkstra shortest-path routing
+- Respects basic OSM `oneway` values
+
+Currently supported road types:
+
+```text
+primary
+primary_link
+secondary
+tertiary
+residential
+service
+```
+
+## Moving Bus Simulation
+
+`BusSimulationRenderer.js` currently animates a test bus along the first successfully generated route.
+
+Current test route:
+
+```text
+Service 105
+Direction 1
+```
+
+The animation uses distance-based movement.
+
+Example simulation speed:
+
+```text
+8 metres per second
+≈ 28.8 km/h
+```
+
+## Current Limitations
+
+The route geometry is generated from the local OSM road graph and LTA ordered bus stops. It is not yet an authoritative LTA route polyline.
+
+Current limitations include:
+
+- Road graph coverage is limited to the Clementi GeoJSON area
+- Some route groups cannot find a complete directed road path
+- One-way handling is basic
+- Bus routes are not lane-level
+- The moving bus is still a test visual marker
+- Live LTA estimated bus coordinates are not yet connected to the moving-bus renderer
+- Bus-stop dwell time is not simulated
+- Traffic signals and congestion are not yet simulated
+
+## Roadmap
+
+### Phase 2
+1. Real Bus Routes — In progress
+2. Moving Buses — In progress
+3. Pedestrian Agents
+4. Wheelchair User Agents
+5. Crossing Behaviour
+6. Accessibility Scoring and Analytics
+
+### Planned Bus Improvements
+
+- Replace the bus marker with a 3D Three.js bus
+- Use LTA Bus Arrival estimated bus coordinates
+- Ignore invalid `0.0, 0.0` coordinates
+- Use the LTA `Monitored` field
+- Match live buses to route paths
+- Add bus-stop dwell time
+- Add service number labels
+- Add WAB wheelchair-accessibility information
+- Add bus occupancy/load information
+- Support single-deck, double-deck, and bendy bus types
+- Add periodic live-data refresh
+
+### Planned Accessibility Simulation
+
+- Pedestrian navigation
+- Wheelchair route choices
+- Crossing waiting behaviour
+- Elevator usage
+- Stair avoidance
+- Accessible path preference
+- Infrastructure bottleneck detection
+- Accessibility scoring
+- Scenario comparison and recommendations
+
+## Security Notes
+
+Never commit API keys.
+
+The following should remain excluded from Git:
+
+```text
+.env
+server/.env
+node_modules/
+server/node_modules/
+```
+
+If an API key is accidentally committed or publicly exposed, rotate or regenerate the key immediately.
+
+## Git Workflow
+
+Check changes:
+
+```bash
+git status
+```
+
+Stage everything:
+
+```bash
+git add .
+```
+
+Commit:
+
+```bash
+git commit -m "Add LTA bus routing and moving bus simulation"
+```
+
+Push:
+
+```bash
+git push
+```
+
+On another computer:
+
+```bash
+git pull
+npm install
+cd server
+npm install
+```
+
+Then recreate the `.env` files if they do not exist.
+
+## Repository
+
+```text
+https://github.com/Nihamia/AccessibilitySimulator
+```

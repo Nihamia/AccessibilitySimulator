@@ -66,4 +66,56 @@ router.get("/busStops", async (req, res) => {
 
 });
 
+
+router.get("/busArrival/:busStopCode", async (req, res) => {
+
+    try {
+
+        const busStopCode = req.params.busStopCode;
+
+        console.log(`Getting arrivals for ${busStopCode}...`);
+
+        console.log(`${BASE_URL}/BusArrivalv2?$BusStopCode=${busStopCode}`);
+        const response = await axios.get(
+            `${BASE_URL}/v3/BusArrival`,
+            {
+                headers: {
+                    AccountKey: process.env.LTA_API_KEY,
+                    accept: "application/json"
+                },
+                params: {
+                    BusStopCode: busStopCode
+                }
+            }
+        );
+
+        console.log(`${BASE_URL}/v3/BusArrival?BusStopCode=${busStopCode}`);
+
+        res.json(response.data);
+
+    } catch (error) {
+
+        console.log("======================");
+        console.log("BUS ARRIVAL ERROR");
+        console.log("======================");
+
+        if (error.response) {
+
+            console.log("Status:", error.response.status);
+            console.log(error.response.data);
+
+            return res
+                .status(error.response.status)
+                .json(error.response.data);
+        }
+
+
+        res.status(500).json({
+            error: error.message
+        });
+
+    }
+
+});
+
 export default router;

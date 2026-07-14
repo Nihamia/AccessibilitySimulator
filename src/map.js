@@ -1,5 +1,5 @@
 import { addGeoJson } from "./world/GeoJsonRenderer";
-import { addLandmarks } from "./world/WorldRenderer";
+import { renderWorld } from "./world/WorldRenderer";
 import mapboxgl from "mapbox-gl";
 import { createThreeLayer } from "./layers/threeLayer";
 
@@ -68,7 +68,7 @@ function addSimulationLayers(map) {
 
     map.addLayer(createThreeLayer());
 
-    addLandmarks(map);
+    renderWorld(map);
 
     addGeoJson(map);
 }

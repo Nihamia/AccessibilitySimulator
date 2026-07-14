@@ -1,33 +1,13 @@
+import { renderLandmarks } from "./renderers/LandmarkRenderer";
 import { renderBusStops } from "./renderers/BusStopRenderer";
-import mapboxgl from "mapbox-gl";
-import { LANDMARKS } from "./landmarks";
+import { renderBusRoutes } from "./renderers/BusRouteRenderer";
 
-export function addLandmarks(map) {
+export function renderWorld(map) {
 
-    LANDMARKS.forEach((landmark) => {
+    renderLandmarks(map);
 
-        const marker = new mapboxgl.Marker()
-            .setLngLat([landmark.lng, landmark.lat])
-            .addTo(map);
-
-        const popup = new mapboxgl.Popup({
-            offset: 25
-        }).setText(landmark.name);
-
-        marker.setPopup(popup);
-
-        const label = document.createElement("div");
-        label.className = "landmark-label";
-        label.textContent = landmark.name;
-
-        new mapboxgl.Marker({
-            element: label,
-            anchor: "top"
-        })
-            .setLngLat([landmark.lng, landmark.lat])
-            .addTo(map);
-    });
-
-    // Render real bus stops from LTA
     renderBusStops(map);
+
+    renderBusRoutes(map);
+
 }
