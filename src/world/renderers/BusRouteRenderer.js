@@ -1,4 +1,8 @@
 import {
+    renderLiveBus,
+    moveLiveBusSmoothly
+} from "./LiveBusRenderer";
+import {
     renderMovingBus
 } from "./BusSimulationRenderer";
 import {
@@ -280,20 +284,120 @@ export async function renderBusRoutes(map) {
         );
 
         if (features.length > 0) {
-
-            const testRoute =
-                features[0];
+            const testRoute = features[0];
 
             console.log(
-                "Animating bus route:",
+                "Tracking live bus route:",
                 testRoute.properties
             );
 
-            renderMovingBus(
-                map,
-                testRoute.geometry.coordinates
-            );
+            const serviceNo =
+                testRoute.properties.serviceNo;
 
+            const clementiStopCodes =
+                Object.keys(stopLookup);
+
+            let liveBusMarker = null;
+
+            async function updateLiveBusPosition() {
+                for (const busStopCode of clementiStopCodes) {
+                    try {
+                        const response = await fetch(
+                            `http://localhost:3000/api/busArrival/${busStopCode}`
+                        );
+
+                        if (!response.ok) {
+                            continue;
+                        }
+
+                        const arrivalData =
+                            await response.json();
+
+                        const service =
+                            arrivalData.Services?.find(
+                                item =>
+                                    item.ServiceNo === serviceNo
+                            );
+
+                        if (!service) {
+                            continue;
+                        }
+
+                        const buses = [
+                            service.NextBus,
+                            service.NextBus2,
+                            service.NextBus3
+                        ];
+
+                        const liveBus = buses.find(bus => {
+                            const lng =
+                                Number(bus?.Longitude);
+
+                            const lat =
+                                Number(bus?.Latitude);
+
+                            const monitored =
+                                Number(bus?.Monitored);
+
+                            return (
+                                monitored === 1 &&
+                                Number.isFinite(lng) &&
+                                Number.isFinite(lat) &&
+                                lng !== 0 &&
+                                lat !== 0
+                            );
+                        });
+
+                        if (!liveBus) {
+                            continue;
+                        }
+
+                        const coordinate = [
+                            Number(liveBus.Longitude),
+                            Number(liveBus.Latitude)
+                        ];
+
+                            if (liveBusMarker) {
+                                moveLiveBusSmoothly(
+                                    liveBusMarker,
+                                    coordinate
+                                );
+                            } else {
+                            liveBusMarker = renderLiveBus(
+                                map,
+                                coordinate,
+                                serviceNo
+                            );
+                        }
+
+                        console.log(
+                            "Live bus position updated:",
+                            coordinate
+                        );
+
+                        // Stop after finding one valid live bus
+                        return;
+                    } catch (error) {
+                        console.error(
+                            `Failed to load live bus data for ${busStopCode}`,
+                            error
+                        );
+                    }
+                }
+
+                console.warn(
+                    `No monitored live position found for bus ${serviceNo}`
+                );
+            }
+
+            // Get the first position immediately
+            await updateLiveBusPosition();
+
+            // Request a newer position every 20 seconds
+            setInterval(
+                updateLiveBusPosition,
+                20000
+            );
         }
 
 

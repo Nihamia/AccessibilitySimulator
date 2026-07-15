@@ -40,6 +40,8 @@ export function addGeoJson(map) {
     renderFootpaths(map);
     renderRailways(map);
     renderStation(map);
+    renderCrossings(map);
+    renderElevators(map);
 
     // ======================
     // Pedestrian Areas
