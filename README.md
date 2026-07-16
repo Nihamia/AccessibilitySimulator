@@ -171,3 +171,5 @@ npm run dev
 ## 📄 License
 
 This project is for educational and research purposes.
+
+1.314583, 103.764632

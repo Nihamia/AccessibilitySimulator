@@ -2,10 +2,12 @@ import * as THREE from "three";
 import mapboxgl from "mapbox-gl";
 import { createElderlyAgent } from "../objects/ElderlyAgent";
 import { Movement } from "../simulation/movement";
+import { setAgentPosition } from "../simulation/agentState";
 import {
   AGENT_ALTITUDE,
   AGENT_ORIGIN,
   MRT_TO_HAWKER,
+  ROUTE_WAYPOINTS,
 } from "../simulation/waypoints";
 
 export function createThreeLayer() {
@@ -53,8 +55,14 @@ export function createThreeLayer() {
       renderer.autoClear = false;
 
       const elderly = createElderlyAgent();
+      elderly.position.copy(MRT_TO_HAWKER[0]);
       scene.add(elderly);
-      movement = new Movement(elderly, MRT_TO_HAWKER);
+      movement = new Movement(elderly, MRT_TO_HAWKER, ROUTE_WAYPOINTS);
+      setAgentPosition(
+        ROUTE_WAYPOINTS[0][0],
+        ROUTE_WAYPOINTS[0][1],
+        movement.getBearing(),
+      );
     },
 
     render(_gl, matrix) {

@@ -78,11 +78,11 @@ export function createMap() {
 
       style: "mapbox://styles/mapbox/satellite-streets-v12",
 
-      center: [103.7650, 1.3151],
+      center: [103.7649, 1.3136],
 
-      zoom: 18.3,
-      pitch: 65,
-      bearing: -28,
+      zoom: 18.5,
+      pitch: 60,
+      bearing: -15,
 
       minZoom: 17,
       maxZoom: 20,
@@ -90,9 +90,9 @@ export function createMap() {
       antialias: true,
   });
   const bounds = [
-    [103.7638, 1.3138],
-    [103.7668, 1.3162]
-];
+    [103.7635, 1.3122],
+    [103.7665, 1.3152],
+  ];
 
 map.setMaxBounds(bounds);
 
