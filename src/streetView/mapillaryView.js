@@ -44,7 +44,7 @@ export function createMapillaryView(container) {
         <p>Get a free token at <a href="https://www.mapillary.com/dashboard/developers" target="_blank" rel="noreferrer">mapillary.com/dashboard/developers</a>.</p>
       </div>
     `;
-    return null;
+    return { destroy() {} };
   }
 
   let viewer = new Viewer({

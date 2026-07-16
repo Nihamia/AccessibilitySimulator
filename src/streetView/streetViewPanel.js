@@ -4,6 +4,10 @@ export function createStreetViewPanel() {
   panel.innerHTML = `
     <div class="street-view-header">
       <span class="street-view-title">Street View</span>
+      <select id="streetViewProviderPanel" class="street-view-provider" aria-label="Street view provider">
+        <option value="google">Google</option>
+        <option value="mapillary">Mapillary</option>
+      </select>
       <button type="button" class="street-view-close" aria-label="Close street view">×</button>
     </div>
     <div id="street-view-container"></div>
@@ -25,7 +29,7 @@ export function createStreetViewPanel() {
   let startMouseY = 0;
 
   header.addEventListener("mousedown", (event) => {
-    if (event.target === closeBtn) return;
+    if (event.target === closeBtn || event.target.closest("select")) return;
     dragging = true;
     const rect = panel.getBoundingClientRect();
     dragOffsetX = event.clientX - rect.left;

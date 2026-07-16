@@ -4,7 +4,11 @@ import "mapillary-js/dist/mapillary.css";
 
 import { createMap } from "./map";
 import { createStreetViewPanel } from "./streetView/streetViewPanel";
-import { createMapillaryView } from "./streetView/mapillaryView";
+import {
+  bindStreetViewProviderSelects,
+  createStreetViewManager,
+  STREET_VIEW_PROVIDERS,
+} from "./streetView/streetViewManager";
 
 createMap();
 
@@ -12,7 +16,15 @@ const streetViewPanel = createStreetViewPanel();
 const streetViewContainer = streetViewPanel.querySelector(
   "#street-view-container",
 );
-createMapillaryView(streetViewContainer);
+const streetViewManager = createStreetViewManager(streetViewContainer);
+
+const providerControls = bindStreetViewProviderSelects(
+  streetViewManager,
+  document.getElementById("streetViewProvider"),
+  document.getElementById("streetViewProviderPanel"),
+);
+
+providerControls.setProvider(STREET_VIEW_PROVIDERS.GOOGLE);
 
 document.getElementById("showStreetView")?.addEventListener("click", () => {
   streetViewPanel.classList.remove("is-hidden");

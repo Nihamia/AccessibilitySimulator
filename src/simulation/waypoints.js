@@ -23,8 +23,11 @@ function toLocal(lng, lat, anchor, scale) {
 
   return new THREE.Vector3(
     (mercator.x - anchor.x) / scale,
+    // Keep movement on the map plane (latitude is mapped to Three.Z).
+    // Altitude is constant in our simulation, so Mercator Z delta is ~0.
     (mercator.z - anchor.z) / scale,
-    -(mercator.y - anchor.y) / scale,
+    // Flip sign to match the orientation expected by `threeLayer.js`.
+    (mercator.y - anchor.y) / scale,
   );
 }
 
