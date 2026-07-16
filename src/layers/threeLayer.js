@@ -57,7 +57,7 @@ export function createThreeLayer() {
       const elderly = createElderlyAgent();
       elderly.position.copy(MRT_TO_HAWKER[0]);
       scene.add(elderly);
-      movement = new Movement(elderly, MRT_TO_HAWKER, ROUTE_WAYPOINTS);
+      movement = new Movement(elderly, MRT_TO_HAWKER, ROUTE_WAYPOINTS, 0.5);
       setAgentPosition(
         ROUTE_WAYPOINTS[0][0],
         ROUTE_WAYPOINTS[0][1],
